@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, UploadFile, Form, Depends, File
 from fastapi.responses import StreamingResponse
 from app.services.orchestrator import OrchestratorService
-import io
+from app.di.dependencies import getOrchestratorService
+import json
 
 router = APIRouter()
 
@@ -9,7 +10,8 @@ router = APIRouter()
 async def process_resume_and_job(
     resume_file: UploadFile = File(..., description="Upload resume file (PDF or DOCX)"),
     job_url: str = Form(None, description="Job posting URL"),
-    job_text: str = Form(None, description="Raw job posting text")
+    job_text: str = Form(None, description="Raw job posting text"),
+    orchestrator: OrchestratorService = Depends(getOrchestratorService),
 ):
     print("Inside router for processing")
     """
@@ -27,23 +29,19 @@ async def process_resume_and_job(
         resume_bytes = await resume_file.read()
 
         # Call orchestrator
-        result_state = OrchestratorService.process_resume_and_job(resume_bytes,resume_file.filename,
+        result: dict = orchestrator.process_resume_and_job(resume_bytes,resume_file.filename,
                                                                   job_url,job_text)
 
         # Extract tailored PDF
-        pdf_bytes = result_state.get("pdf_bytes")
-        if not pdf_bytes:
-            raise HTTPException(
-                status_code=500,
-                detail="Pipeline completed but PDF was not generated."
-            )
+        async def json_streamer():
+            json_str = json.dumps(result.model_dump())  # Use Pydantic's serialization
+            yield json_str
 
-        # Stream PDF back as response
         return StreamingResponse(
-            io.BytesIO(pdf_bytes),
-            media_type="application/pdf",
-            headers={"Content-Disposition": "attachment; filename=tailored_resume.pdf"}
+            json_streamer(),
+            media_type="application/json"
         )
+
 
     except ValueError as ve:
         raise HTTPException(status_code=422, detail=f"Parsing error: {str(ve)}")

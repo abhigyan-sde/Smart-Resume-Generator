@@ -1,9 +1,10 @@
-from typing import Optional, Dict, Any
-from app.state_graph import run_pipeline
+from typing import Optional
+from app.services.evaluate_resume import build_resume_evaluation_prompt
 from app.utils.validations import Validation
 from app.utils.helper import Helper
 from fastapi import HTTPException
 from app.utils.parser import Parser
+from app.models.resume_feedback import ResumeEvaluationResult
 
 
 class OrchestratorService:
@@ -11,16 +12,19 @@ class OrchestratorService:
     Service responsible for orchestrating the entire flow:
     - Validate resume file
     - Fetch job posting if URL provided
-    - Initialize and invoke LangGraph pipeline
+    - Extract text from resume
+    - Send resume text and job description to evaluation service
     """
 
-    @staticmethod
-    def process_resume_and_job(
+    def __init__(self):
+        pass
+
+    async def process_resume_and_job(
         file_bytes: bytes,
         filename: str,
         url: Optional[str] = None,
         job_text: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> ResumeEvaluationResult:
         """
         Main orchestration entrypoint.
 
@@ -51,19 +55,6 @@ class OrchestratorService:
                 detail="Job description could not be retrieved. Please provide job text.",
             )
 
-        # ---- Step 3: Initialize state for LangGraph ----
-        initial_state = {
-            "resume_file_bytes": file_bytes,
-            "resume_filename": filename,
-            "job_text": extracted_job_text,
-            "job_url": url,
-        }
+        resume_text = Parser.extract_resume_text_from_pdf(file_bytes)
 
-        final_state = run_pipeline(initial_state)
-
-        # final_state["structured_resume_doc"]
-        # final_state["job_description_doc"]
-        # final_state["tailored_resume"]
-        # final_state["pdf_bytes"]
-        print("end orchestrator")
-        return final_state
+        return await build_resume_evaluation_prompt(resume_text, extracted_job_text)
