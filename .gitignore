@@ -249,3 +249,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# macOS system files
+.DS_Store
