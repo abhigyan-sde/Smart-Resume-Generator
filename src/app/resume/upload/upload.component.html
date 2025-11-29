@@ -1,0 +1,86 @@
+<mat-card class="upload-card">
+
+  <mat-card-title>Upload Your Resume</mat-card-title>
+  <mat-card-subtitle>
+    Provide your resume and job details to get suggestions.
+  </mat-card-subtitle>
+
+  <mat-card-content>
+
+    <!-- Resume Upload Section -->
+    <div class="section">
+      <h3 class="section-title">Resume</h3>
+
+      <!-- Hidden file input -->
+      <input
+        type="file"
+        accept="application/pdf"
+        hidden
+        #resumeFileInput
+        (change)="onFileSelected($event)"
+      />
+
+      <!-- Button triggers hidden file input -->
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="resumeFileInput.click()"
+      >
+        Select Resume
+      </button>
+
+      @if (resumeFile) {
+        <span class="file-name">
+          {{ resumeFileName }}
+        </span>
+      }
+    </div>
+
+    <mat-divider class="divider"></mat-divider>
+
+    <!-- Mode Switch -->
+    <div class="section">
+      <mat-radio-group [(ngModel)]="inputMode" class="mode-switch">
+        <mat-radio-button value="url">Job URL</mat-radio-button>
+        <mat-radio-button value="description">Job Description</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <!-- URL Input -->
+    @if (inputMode === 'url') {
+      <div class="section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Job Posting URL</mat-label>
+          <input matInput [(ngModel)]="jobUrl" placeholder="https://…" />
+        </mat-form-field>
+      </div>
+    }
+
+    <!-- Job Description Input -->
+    @if (inputMode === 'description') {
+      <div class="section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Paste Job Description</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="jobDescription"
+            rows="6"
+          ></textarea>
+        </mat-form-field>
+      </div>
+    }
+
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="submit()"
+      [disabled]="!resumeFile"
+    >
+      Process
+    </button>
+  </mat-card-actions>
+
+</mat-card>

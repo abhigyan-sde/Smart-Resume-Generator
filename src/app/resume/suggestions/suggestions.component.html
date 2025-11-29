@@ -1,0 +1,43 @@
+<div class="suggestions-container">
+
+  <h2 class="suggestions-title">Suggestions</h2>
+
+  @if (!suggestions.length) {
+    <div class="no-suggestions">
+      No suggestions available yet.
+    </div>
+  }
+
+  @for (item of suggestions; track item) {
+    <div class="suggestion-item">
+
+      <!-- Original Text -->
+      <div class="original-text">
+        <p class="label">Original Text:</p>
+        <p class="content">{{ item.original_text }}</p>
+      </div>
+
+      <!-- Suggested Improvement -->
+      <div class="suggested-text">
+        <p class="label">Suggested Improvement:</p>
+        <textarea
+          [(ngModel)]="item.edited_suggestion"
+          rows="3"
+          class="textarea"
+        >{{ item.suggested_improvement }}</textarea>
+      </div>
+
+      <!-- Reason -->
+      <div class="reason">
+        Reason: {{ item.reason }}
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button (click)="applySuggestion(item)" class="btn-apply">Apply</button>
+        <button (click)="resetSuggestion(item)" class="btn-reset">Reset</button>
+      </div>
+
+    </div>
+  }
+</div>
