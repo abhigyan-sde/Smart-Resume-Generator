@@ -29,7 +29,7 @@ async def process_resume_and_job(
         resume_bytes = await resume_file.read()
 
         # Call orchestrator
-        result: dict = orchestrator.process_resume_and_job(resume_bytes,resume_file.filename,
+        result = await orchestrator.process_resume_and_job(resume_bytes,resume_file.filename,
                                                                   job_url,job_text)
 
         # Extract tailored PDF

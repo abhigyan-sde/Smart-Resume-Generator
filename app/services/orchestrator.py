@@ -1,5 +1,5 @@
 from typing import Optional
-from app.services.evaluate_resume import build_resume_evaluation_prompt
+from app.services.evaluate_resume import evaluate_resume_against_jd
 from app.utils.validations import Validation
 from app.utils.helper import Helper
 from fastapi import HTTPException
@@ -19,7 +19,7 @@ class OrchestratorService:
     def __init__(self):
         pass
 
-    async def process_resume_and_job(
+    async def process_resume_and_job(self,
         file_bytes: bytes,
         filename: str,
         url: Optional[str] = None,
@@ -54,7 +54,9 @@ class OrchestratorService:
                 status_code=400,
                 detail="Job description could not be retrieved. Please provide job text.",
             )
-
+        print("**********Job Description**************")
+        print(extracted_job_text)
         resume_text = Parser.extract_resume_text_from_pdf(file_bytes)
-
-        return await build_resume_evaluation_prompt(resume_text, extracted_job_text)
+        print("******************ResumeText*************")
+        print(resume_text)
+        return await evaluate_resume_against_jd(resume_text, extracted_job_text)

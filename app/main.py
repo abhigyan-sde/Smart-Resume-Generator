@@ -5,7 +5,7 @@ load_dotenv()
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import resume, job
+from app.routers import resume
 
 
 def create_app() -> FastAPI:
@@ -32,7 +32,6 @@ def create_app() -> FastAPI:
 
     # Include routers
     app.include_router(resume.router, prefix="/resume", tags=["Resume"])
-    app.include_router(job.router, prefix="/job", tags=["Job"])
 
     return app
 

@@ -5,17 +5,20 @@ from langchain_openai import ChatOpenAI
 async def evaluate_resume_against_jd(resume_text: str, job_description: str) -> ResumeEvaluationResult:
 
     prompt = build_resume_evaluation_prompt(resume_text, job_description)
+    print("************************ PROMPT *****************")
+    print(prompt)
 
     llm = ChatOpenAI(
-        model="gpt-40-mini",
+        model="gpt-4o-mini",
         temperature=0.2
     )
 
     # Call the LLM
-    response = await llm.invoke(prompt)
+    response = await llm.ainvoke(prompt)
 
     raw_output = response.content
-
+    print("****************LLM OUTPUT****************")
+    print(raw_output)
     # Validate JSON response using Pydantic
     try:
         parsed = ResumeEvaluationResult.model_validate_json(raw_output)
