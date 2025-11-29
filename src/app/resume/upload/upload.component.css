@@ -1,0 +1,35 @@
+.upload-card {
+  max-width: 600px;
+  margin: 24px auto;
+  padding: 16px;
+}
+
+.section {
+  margin-top: 20px;
+}
+
+.section-title {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.file-name {
+  margin-left: 12px;
+  color: #555;
+  font-size: 14px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mode-switch {
+  margin-top: 16px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.divider {
+  margin-top: 20px;
+}

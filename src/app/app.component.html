@@ -1,0 +1,27 @@
+<mat-toolbar color="primary">
+  <span>Smart Resume Generator</span>
+</mat-toolbar>
+
+<div class="app-container">
+
+  <!-- LEFT -->
+  <mat-card class="side-panel mat-elevation-z2">
+    <app-resume-upload (processed)="onProcessed($event)"></app-resume-upload>
+  </mat-card>
+
+  <!-- CENTER -->
+  <mat-card class="center-panel mat-elevation-z2">
+    <div class="center-content">
+      <app-resume-viewer [pdfUrl]="pdfSrc"></app-resume-viewer>
+    </div>
+  </mat-card>
+
+  <!-- RIGHT -->
+  <mat-card class="side-panel mat-elevation-z2">
+    <app-suggestions-panel
+      [evaluation]="evaluation"
+      (suggestionApplied)="onApplySuggestion($event)">
+    </app-suggestions-panel>
+  </mat-card>
+
+</div>

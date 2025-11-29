@@ -1,0 +1,38 @@
+.viewer-container {
+  height: 100%;         /* ⬅️ The critical fix */
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  box-sizing: border-box;
+  outline: 3px dashed hotpink;  /* visual debug */
+  overflow-y: auto !important;
+}
+
+.pdf-page-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+canvas.pdf-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* safety: ensure canvases cannot make the page taller than they should by CSS */
+.pdf-page-wrapper, .pdf-canvas {
+  max-width: 100%;
+}
+
+/* placeholder styling */
+.no-resume-placeholder {
+  margin-top: 32px;
+  color: #666;
+  text-align: center;
+}

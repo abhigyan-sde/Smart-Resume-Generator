@@ -1,0 +1,13 @@
+<div class="viewer-container">
+  @if (pdfUrl) {
+    @for (page of pages; track page) {
+      <div class="pdf-page-wrapper">
+        <canvas #pdfCanvas class="pdf-canvas"></canvas>
+      </div>
+    }
+  }
+
+  @if (!pdfUrl) {
+    <div class="no-resume-placeholder">No resume uploaded yet.</div>
+  }
+</div>
