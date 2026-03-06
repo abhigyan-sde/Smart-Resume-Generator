@@ -9,10 +9,12 @@ export interface SectionFeedbackItem {
 }
 
 export interface LineSuggestion {
+  lineId?: number | null;
   original_text: string;
   suggested_improvement: string;
   reason: string;
-  edited_suggestion: string;
+  edited_suggestion?: string;
+  isApplied?: boolean;
 }
 
 export interface RecommendedBullet {

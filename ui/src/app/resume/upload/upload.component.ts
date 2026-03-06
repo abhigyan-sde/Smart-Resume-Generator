@@ -30,7 +30,7 @@ export class UploadComponent {
   resumeFile: File | null = null;
   resumeFileName: string | null = null;
   resumePreviewUrl: SafeResourceUrl | null = null; // Instant preview
-
+  pdfUrl: string | undefined;
   jobUrl: string = '';
   jobDescription: string = '';
   inputMode: 'url' | 'description' = 'url';
@@ -48,8 +48,8 @@ export class UploadComponent {
       this.resumeFileName = file.name;
 
       // Generate instant PDF preview
-      const blobUrl = URL.createObjectURL(file);
-      this.processed.emit({ pdfUrl: blobUrl, evaluation: null! });
+      this.pdfUrl = URL.createObjectURL(file);
+      this.processed.emit({ pdfUrl: this.pdfUrl, evaluation: null! });
     }
   }
 
@@ -73,10 +73,8 @@ export class UploadComponent {
 
     try {
       const result = await this.resumeService.processResume(this.resumeFile, payload);
-      const pdfBlobUrl = URL.createObjectURL(result.pdfBlob);
-
-      // Emit backend-processed PDF + evaluation
-      this.processed.emit({ pdfUrl: pdfBlobUrl, evaluation: result.evaluation });
+      // Emit backend-processed evaluation
+      this.processed.emit({pdfUrl: this.pdfUrl!, evaluation: result });
     } catch (error) {
       console.error('Error processing resume:', error);
     } finally {

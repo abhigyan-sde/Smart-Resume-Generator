@@ -4,23 +4,35 @@
 
 <div class="app-container">
 
-  <!-- LEFT -->
+  <!-- LEFT: Upload PDF -->
   <mat-card class="side-panel mat-elevation-z2">
     <app-resume-upload (processed)="onProcessed($event)"></app-resume-upload>
   </mat-card>
 
-  <!-- CENTER -->
+  <!-- CENTER: Tabs for PDF / Text Preview -->
   <mat-card class="center-panel mat-elevation-z2">
-    <div class="center-content">
-      <app-resume-viewer [pdfUrl]="pdfSrc"></app-resume-viewer>
-    </div>
+    <mat-tab-group class="center-content" mat-stretch-tabs>
+      <mat-tab label="Resume">
+        <div class="tab-content">
+          <app-resume-viewer [pdfUrl]="pdfSrc" (lineIdToTextMap)="onLinesExtracted($event)">
+          </app-resume-viewer>
+        </div>
+      </mat-tab>
+      @if(resumeDraft && resumeDraft.lines && resumeDraft.lines.length > 0){
+      <mat-tab label="Text Preview">
+        <div class="tab-content">
+          <app-text-preview [originalLines]="originalLinesForPreview" [updatedLines]="updatedLinesForPreview"
+            (resumeTextChanged)="updateResumeDraft($event)">
+          </app-text-preview>
+        </div>
+      </mat-tab>
+      }
+    </mat-tab-group>
   </mat-card>
 
-  <!-- RIGHT -->
+  <!-- RIGHT: Suggestions Panel -->
   <mat-card class="side-panel mat-elevation-z2">
-    <app-suggestions-panel
-      [evaluation]="evaluation"
-      (suggestionApplied)="onApplySuggestion($event)">
+    <app-suggestions-panel [evaluation]="evaluation" (suggestionApplied)="onApplySuggestion($event)">
     </app-suggestions-panel>
   </mat-card>
 

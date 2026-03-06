@@ -19,13 +19,28 @@ export class SuggestionsComponent {
   }
 
   applySuggestion(item: LineSuggestion) {
+    item.isApplied = true;
+    item.edited_suggestion = item.suggested_improvement;
+
     this.suggestionApplied.emit({
       original: item.original_text,
-      updated: item.edited_suggestion || item.suggested_improvement,
+      updated: item.edited_suggestion,
     });
   }
 
-  resetSuggestion(item: LineSuggestion) {
-    item.edited_suggestion = item.suggested_improvement;
+  discardSuggestion(item: LineSuggestion) {
+    item.isApplied = false;
+    item.edited_suggestion = item.original_text;
+
+    this.suggestionApplied.emit({
+      original: item.original_text,
+      updated: item.original_text,
+    });
+  }
+
+  removeSuggestion(item: LineSuggestion) {
+    const idx = this.suggestions.indexOf(item);
+    if (idx !== -1) 
+      this.evaluation!.line_by_line_suggestions.splice(idx, 1);
   }
 }

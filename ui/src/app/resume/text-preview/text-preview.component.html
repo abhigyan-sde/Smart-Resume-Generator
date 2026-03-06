@@ -1,0 +1,8 @@
+<div class="resume-preview">
+    @for(line of displayLines; track line){
+    <div class="resume-line" [class.updated]="line.isUpdated">
+        <textarea #textarea [value]="line.text" (input)="onEdit(line.lineId, textarea.value)"
+            rows="1"></textarea>
+    </div>
+    }
+</div>
