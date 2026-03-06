@@ -2,7 +2,7 @@ import io
 import pdfplumber
 import tempfile
 import os
-from docx2pdf import convert
+from docx2pdf import convert #type: ignore
 
 
 class Parser:        
@@ -49,8 +49,8 @@ class Parser:
             for page in pdf.pages:
                 page_text = page.extract_text()
                 if page_text:
-                    all_text.append(page_text.strip())
+                    all_text.append(page_text.strip()) #type: ignore
 
         # Join all pages with newlines
-        resume_text = "\n".join(all_text)
+        resume_text = "\n".join(all_text) #type: ignore
         return resume_text

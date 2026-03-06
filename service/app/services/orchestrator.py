@@ -21,7 +21,7 @@ class OrchestratorService:
 
     async def process_resume_and_job(self,
         file_bytes: bytes,
-        filename: str,
+        filename: str | None,
         url: Optional[str] = None,
         job_text: Optional[str] = None,
     ) -> ResumeEvaluationResult:
@@ -38,7 +38,9 @@ class OrchestratorService:
             Dict[str, Any]: Final state dictionary containing tailored resume.
         """
         print("begin Orchestrator")
-
+        if not filename:
+            filename = "resume_default"
+            
         # ---- Step 1: Validate resume extension ----
         if not Validation.validateFileExtension(filename):
             raise HTTPException(
