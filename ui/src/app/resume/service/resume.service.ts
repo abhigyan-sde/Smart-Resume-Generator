@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ResumeEvaluationResult, LineSuggestion, SkillsMatch } from '../model/resume-evaluation-result.model';
+import { ResumeGenerationPayLoad } from '../model/resume-parser.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ResumeService {
-  private API_URL = 'http://localhost:8000/resume/process';
+  constructor(private http: HttpClient){}
+
+  private API_URL = 'http://localhost:8000/resume';
 
   private getMockResponse() : ResumeEvaluationResult{
     return {
@@ -101,8 +105,6 @@ export class ResumeService {
     };
   }
 
-  constructor() { }
-
   /**
    * Simulate processing a resume against a job description.
    * Returns a mock PDF blob and dummy evaluation.
@@ -148,12 +150,14 @@ export class ResumeService {
   /**
    * Simulate regenerating the resume PDF after applying suggestions
    */
-  async regenerateResume(evaluation: ResumeEvaluationResult): Promise<string> {
-    // Simulate backend PDF generation delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // For now, just return a new dummy blob URL
-    const pdfBlob = new Blob([new Uint8Array([37, 80, 68, 70, 45, 49, 46, 52, 10])], { type: 'application/pdf' });
-    return URL.createObjectURL(pdfBlob);
+  generateResume(payload: ResumeGenerationPayLoad, file: File) {
+    const formData = new FormData();
+    formData.append('uploaded_file', file); 
+    formData.append('payload', JSON.stringify(payload));
+    return this.http.post(
+      `${this.API_URL}/generate-resume`,
+        formData,
+      { responseType: 'blob' }
+    );
   }
 }

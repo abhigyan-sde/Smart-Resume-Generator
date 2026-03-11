@@ -18,3 +18,11 @@ export interface ResumeDraft {
   logicalLines?: LogicalLine[];
   editedLines?: Record<number, string>;
 }
+
+export interface ResumeGenerationPayLoad{
+  modifications:{
+    lineId: number;
+    newText: string;
+    segments: PhysicalSegment[];
+  }[];
+}

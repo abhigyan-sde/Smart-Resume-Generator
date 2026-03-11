@@ -6,7 +6,10 @@
 
   <!-- LEFT: Upload PDF -->
   <mat-card class="side-panel mat-elevation-z2">
-    <app-resume-upload (processed)="onProcessed($event)"></app-resume-upload>
+    <app-resume-upload (processed)="onProcessed($event)" 
+    (generateResume)="onGenerateResume()" 
+    [resumeEvaluationDone]="evaluation != null">
+  </app-resume-upload>
   </mat-card>
 
   <!-- CENTER: Tabs for PDF / Text Preview -->
@@ -14,7 +17,7 @@
     <mat-tab-group class="center-content" mat-stretch-tabs>
       <mat-tab label="Resume">
         <div class="tab-content">
-          <app-resume-viewer [pdfUrl]="pdfSrc" (lineIdToTextMap)="onLinesExtracted($event)">
+          <app-resume-viewer [pdfUrl]="pdfSrc" (lineMap)="onLinesExtracted($event)">
           </app-resume-viewer>
         </div>
       </mat-tab>

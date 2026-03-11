@@ -21,7 +21,7 @@ import { PhysicalSegment, LogicalLine } from '../model/resume-parser.model';
 })
 export class ViewerComponent implements OnChanges, AfterViewInit {
   @Input() pdfUrl: string | null = null;
-  @Output() lineIdToTextMap = new EventEmitter<Record<number, string>>();
+  @Output() lineMap = new EventEmitter<LogicalLine[]>();
 
   @ViewChildren('pdfCanvas')
   pdfCanvas!: QueryList<ElementRef<HTMLCanvasElement>>;
@@ -128,9 +128,7 @@ export class ViewerComponent implements OnChanges, AfterViewInit {
       this.processLogicalLines(groupedByY);
     }
 
-    const output: Record<number, string> = {};
-    this.logicalLines.forEach(l => (output[l.lineId] = l.text));
-    this.lineIdToTextMap.emit(output);
+    this.lineMap.emit(this.logicalLines)
   }
 
   private groupSegmentsByY(

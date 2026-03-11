@@ -1,9 +1,8 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ResumeEvaluationResult } from '../model/resume-evaluation-result.model';
 import { ResumeService } from '../service/resume.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
@@ -36,8 +35,9 @@ export class UploadComponent {
   inputMode: 'url' | 'description' = 'url';
   loading: boolean = false;
 
-  @Output() processed = new EventEmitter<{ pdfUrl: string; evaluation: ResumeEvaluationResult }>();
-
+  @Input() resumeEvaluationDone: boolean = false;
+  @Output() generateResume = new EventEmitter<void>();
+  @Output() processed = new EventEmitter<{ pdfUrl: string; evaluation: ResumeEvaluationResult, file: File }>();
   constructor(private resumeService: ResumeService, private sanitizer: DomSanitizer) {}
 
   /** When user selects a file, set it and generate preview immediately */
@@ -49,7 +49,7 @@ export class UploadComponent {
 
       // Generate instant PDF preview
       this.pdfUrl = URL.createObjectURL(file);
-      this.processed.emit({ pdfUrl: this.pdfUrl, evaluation: null! });
+      this.processed.emit({ pdfUrl: this.pdfUrl, evaluation: null!, file });
     }
   }
 
@@ -57,6 +57,10 @@ export class UploadComponent {
   setMode(mode: 'url' | 'description') {
     this.inputMode = mode;
   }
+
+  onGenerateClick() {
+  this.generateResume.emit();
+}
 
   /** Submit the resume to backend for evaluation */
   async submit() {
@@ -74,7 +78,7 @@ export class UploadComponent {
     try {
       const result = await this.resumeService.processResume(this.resumeFile, payload);
       // Emit backend-processed evaluation
-      this.processed.emit({pdfUrl: this.pdfUrl!, evaluation: result });
+      this.processed.emit({pdfUrl: this.pdfUrl!, evaluation: result, file: this.resumeFile });
     } catch (error) {
       console.error('Error processing resume:', error);
     } finally {
